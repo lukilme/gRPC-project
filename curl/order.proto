@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package order;
+
+option go_package = "ifpb.com/microservices-proto/golang/order";
+
+message OrderItem {
+    int64 product_id = 1;
+    int32 quantity = 2;
+    float unit_price = 3;
+}
+
+message CreateOrderRequest {
+    int64 user_id = 1;
+    repeated OrderItem items = 2;
+}
+
+message CreateOrderResponse {
+    int64 order_id = 1;
+}
+
+message GetOrderRequest {
+    int64 order_id = 1;
+}
+
+message GetOrderResponse {
+    int64 order_id = 1;
+    int64 customer_id = 2;
+    string status = 3;
+    repeated OrderItem items = 4;
+    float total_price = 5;
+}
+
+service OrderService {
+    rpc PlaceOrder(CreateOrderRequest) returns (CreateOrderResponse);
+    rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+}

@@ -1,6 +1,7 @@
 package grpc
 
 import (
+	"context"
 	"log"
 	"net"
 
@@ -8,6 +9,27 @@ import (
 	"google.golang.org/grpc/reflection"
 	"ifpb.com/microservices/order/internal/application/core/api"
 )
+
+type OrderItem struct {
+	ProductId int64
+	Quantity  int32
+	UnitPrice float32
+}
+
+type CreateOrderRequest struct {
+	UserId int64
+	Items  []*OrderItem
+}
+
+type CreateOrderResponse struct {
+	OrderId int64
+}
+
+// Adicione este método ao struct Adapter
+func (a *Adapter) PlaceOrder(ctx context.Context, req *CreateOrderRequest) (*CreateOrderResponse, error) {
+	// Sua lógica aqui usando a.api.PlaceOrder()
+	return &CreateOrderResponse{OrderId: 999}, nil
+}
 
 type Adapter struct {
 	api    *api.Application
@@ -29,7 +51,29 @@ func (a *Adapter) Run() {
 	}
 
 	a.server = grpc.NewServer()
+
+	serviceDesc := &grpc.ServiceDesc{
+		ServiceName: "order.OrderService",
+		HandlerType: (*Adapter)(nil),
+		Methods: []grpc.MethodDesc{
+			{
+				MethodName: "PlaceOrder",
+				Handler: func(srv interface{}, ctx context.Context,
+					dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+
+					var req CreateOrderRequest
+					if err := dec(&req); err != nil {
+						return nil, err
+					}
+					return srv.(*Adapter).PlaceOrder(ctx, &req)
+				},
+			},
+		},
+	}
+
+	a.server.RegisterService(serviceDesc, a)
 	reflection.Register(a.server)
+
 	log.Printf("gRPC server listening on port %s", a.port)
 	if err := a.server.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

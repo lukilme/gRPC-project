@@ -20,12 +20,10 @@ func NewAdapter(dataSourceURL string) (*Adapter, error) {
 		return nil, fmt.Errorf("failed to open database: %w", err)
 	}
 
-	// Testar conexão
 	if err := db.Ping(); err != nil {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
-	// Criar tabelas separadamente
 	if err := createTables(db); err != nil {
 		return nil, fmt.Errorf("failed to create tables: %w", err)
 	}
@@ -35,9 +33,8 @@ func NewAdapter(dataSourceURL string) (*Adapter, error) {
 }
 
 func createTables(db *sql.DB) error {
-	// Executar cada comando SQL SEPARADAMENTE
 	queries := []string{
-		// Tabela orders
+
 		`CREATE TABLE IF NOT EXISTS orders (
             id BIGINT AUTO_INCREMENT PRIMARY KEY,
             customer_id BIGINT NOT NULL,
@@ -45,7 +42,6 @@ func createTables(db *sql.DB) error {
             created_at BIGINT NOT NULL
         )`,
 
-		// Tabela order_items
 		`CREATE TABLE IF NOT EXISTS order_items (
             id BIGINT AUTO_INCREMENT PRIMARY KEY,
             order_id BIGINT NOT NULL,
@@ -54,7 +50,6 @@ func createTables(db *sql.DB) error {
             unit_price FLOAT NOT NULL
         )`,
 
-		// Adicionar foreign key separadamente (opcional)
 		`CREATE TABLE IF NOT EXISTS order_items (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     order_id BIGINT NOT NULL,
