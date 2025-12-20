@@ -1,6 +1,8 @@
 package api
 
 import (
+	"log"
+
 	"ifpb.com/microservices/order/internal/application/core/domain"
 )
 
@@ -21,6 +23,8 @@ func (a Application) PlaceOrder(order domain.Order) (domain.Order, error) {
 	if err != nil {
 		return domain.Order{}, err
 	}
+	totalPrice := order.TotalPrice()
+	log.Println(totalPrice)
 	paymentErr := a.payment.Charge(&order)
 	if paymentErr != nil {
 		return domain.Order{}, paymentErr
@@ -29,5 +33,9 @@ func (a Application) PlaceOrder(order domain.Order) (domain.Order, error) {
 }
 
 func (a Application) GetOrder(id int64) (domain.Order, error) {
-	return a.db.Get(id)
+	order, err := a.db.Get(id)
+	if err != nil {
+		return domain.Order{}, err
+	}
+	return order, nil
 }

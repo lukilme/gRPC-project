@@ -135,7 +135,6 @@ func (a *Adapter) Save(order *domain.Order) error {
 		}
 	}()
 
-	// Inserir ordem
 	orderQuery := `INSERT INTO orders (customer_id, status, created_at) VALUES (?, ?, ?)`
 
 	result, err := tx.Exec(orderQuery, order.CustomerID, order.Status, time.Now().Unix())
@@ -151,7 +150,6 @@ func (a *Adapter) Save(order *domain.Order) error {
 	}
 	order.ID = orderID
 
-	// Inserir itens
 	itemQuery := `INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)`
 
 	for _, item := range order.OrderItems {
