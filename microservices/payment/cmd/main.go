@@ -23,15 +23,12 @@ const (
 )
 
 func tracerProvider(url string) (*tracesdk.TracerProvider, error) {
-	// Create the Jaeger exporter
 	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
 	if err != nil {
 		return nil, err
 	}
 	tp := tracesdk.NewTracerProvider(
-		// Always be sure to batch in production.
 		tracesdk.WithBatcher(exp),
-		// Record information about this application in a Resource.
 		tracesdk.WithResource(resource.NewWithAttributes(
 			semconv.SchemaURL,
 			semconv.ServiceNameKey.String(service),
@@ -60,22 +57,15 @@ func (l customLogger) Format(entry *log.Entry) ([]byte, error) {
 	span := trace.SpanFromContext(entry.Context)
 	entry.Data["trace_id"] = span.SpanContext().TraceID().String()
 	entry.Data["span_id"] = span.SpanContext().SpanID().String()
-	//Below injection is Just to understand what Context has
 	entry.Data["Context"] = span.SpanContext()
 	return l.formatter.Format(entry)
 }
 
 func main() {
-	/*tp, err := tracerProvider("http://jaeger-otel.jaeger.svc.cluster.local:14278/api/traces")
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	otel.SetTracerProvider(tp)
-	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}))
-	*/
 	dbAdapter, err := db.NewAdapter(config.GetDataSourceURL())
 	if err != nil {
+
 		log.Fatalf("Failed to connect to database. Error: %v", err)
 	}
 

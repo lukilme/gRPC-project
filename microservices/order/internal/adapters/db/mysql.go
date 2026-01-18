@@ -122,7 +122,6 @@ func (a *Adapter) Get(id int64) (domain.Order, error) {
 }
 
 func (a *Adapter) Save(order *domain.Order) error {
-	// Usar transação
 	tx, err := a.db.Begin()
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %w", err)
@@ -160,7 +159,6 @@ func (a *Adapter) Save(order *domain.Order) error {
 		}
 	}
 
-	// Commit
 	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("failed to commit transaction: %w", err)
 	}
@@ -169,7 +167,6 @@ func (a *Adapter) Save(order *domain.Order) error {
 	return nil
 }
 
-// Método para fechar conexão
 func (a *Adapter) Close() error {
 	return a.db.Close()
 }

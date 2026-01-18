@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	_ "github.com/charmbracelet/bubbletea"
 	"ifpb.com/microservices/order/config"
 	"ifpb.com/microservices/order/internal/adapters/db"
 	"ifpb.com/microservices/order/internal/adapters/grpc"

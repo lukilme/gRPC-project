@@ -38,7 +38,10 @@ func (a Adapter) Run() {
 	if config.GetEnv() == "development" {
 		reflection.Register(grpcServer)
 	}
-
+	red := "\x1b[31m%s\x1b[0m"
+	blue := "\x1b[34m%s\x1b[0m"
+	log.Printf(red, "Hello, in red!")
+	log.Printf(blue, "And this is blue.")
 	log.Printf("starting payment service on port %d ...", a.port)
 	if err := grpcServer.Serve(listen); err != nil {
 		log.Fatalf("failed to serve grpc on port ")

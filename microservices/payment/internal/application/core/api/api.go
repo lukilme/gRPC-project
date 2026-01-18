@@ -14,6 +14,7 @@ type Application struct {
 }
 
 func NewApplication(db ports.DBPort) *Application {
+
 	return &Application{
 		db: db,
 	}
