@@ -3,6 +3,8 @@ package api
 import (
 	"log"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"ifpb.com/microservices/order/internal/application/core/domain"
 )
 
@@ -19,6 +21,13 @@ func NewApplication(db domain.DBPort, payment domain.PaymentPort) *Application {
 }
 
 func (a Application) PlaceOrder(order domain.Order) (domain.Order, error) {
+	total_item := 0
+	for _, item := range order.OrderItems {
+		total_item += int(item.Quantity)
+	}
+	if total_item > 50 {
+		return domain.Order{}, status.Errorf(codes.ResourceExhausted, "Order cannot over 50 items.")
+	}
 	err := a.db.Save(&order)
 	if err != nil {
 		return domain.Order{}, err

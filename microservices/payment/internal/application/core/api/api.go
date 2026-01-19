@@ -22,11 +22,17 @@ func NewApplication(db ports.DBPort) *Application {
 
 func (a Application) Charge(ctx context.Context, payment domain.Payment) (domain.Payment, error) {
 	if payment.TotalPrice > 1000 {
+		payment.Status = "Canceled"
+		_ = a.db.Save(ctx, &payment)
 		return domain.Payment{}, status.Errorf(codes.InvalidArgument, "Payment over 1000 is not allowed.")
 	}
-	err := a.db.Save(ctx, &payment)
-	if err != nil {
+	payment.Status = "Paid"
+
+	if err := a.db.Save(ctx, &payment); err != nil {
+		payment.Status = "Canceled"
+		_ = a.db.Save(ctx, &payment)
 		return domain.Payment{}, err
 	}
+
 	return payment, nil
 }
