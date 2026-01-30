@@ -66,7 +66,6 @@ func createTables(db *sql.DB) error {
 	for _, query := range queries {
 		_, err := db.Exec(query)
 		if err != nil {
-			// Ignorar erro se foreign key já existir
 			if !contains(err.Error(), "already exists") && !contains(err.Error(), "Duplicate key") {
 				return fmt.Errorf("failed to execute query: %s, error: %w", query, err)
 			}
@@ -81,7 +80,6 @@ func contains(s, substr string) bool {
 }
 
 func (a *Adapter) Get(id int64) (domain.Order, error) {
-	// Primeiro, buscar a ordem
 	orderQuery := `SELECT id, customer_id, status, created_at FROM orders WHERE id = ?`
 
 	row := a.db.QueryRow(orderQuery, id)
@@ -95,7 +93,6 @@ func (a *Adapter) Get(id int64) (domain.Order, error) {
 		return domain.Order{}, fmt.Errorf("failed to get order: %w", err)
 	}
 
-	// Buscar itens do pedido
 	itemsQuery := `SELECT product_id, quantity, unit_price FROM order_items WHERE order_id = ?`
 
 	rows, err := a.db.Query(itemsQuery, id)

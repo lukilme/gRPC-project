@@ -21,7 +21,6 @@ func (m Model) Init() tea.Cmd {
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
-	// 1️⃣ Mensagens globais (async)
 	switch msg := msg.(type) {
 
 	case orderSuccessMsg:
@@ -42,7 +41,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 	}
 
-	// 2️⃣ Lógica por tela
 	switch m.Screen {
 
 	case MenuScreen:
