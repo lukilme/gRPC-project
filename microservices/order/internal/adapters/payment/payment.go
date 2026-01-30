@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
-	"ifpb.com/microservices-proto/golang/payment"
+	payment "ifpb.com/microservices-proto/golang/payment"
 	"ifpb.com/microservices/order/internal/application/core/domain"
 )
 

@@ -7,8 +7,8 @@ import (
 
 	"github.com/huseyinbabal/microservices/payment/config"
 	"github.com/huseyinbabal/microservices/payment/internal/ports"
-	"github.com/ruandg/microservices-proto/golang/payment"
 	"google.golang.org/grpc/reflection"
+	payment "ifpb.com/microservices-proto/golang/payment"
 
 	"google.golang.org/grpc"
 )

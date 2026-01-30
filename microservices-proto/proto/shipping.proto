@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package shipping;
+
+option go_package = "ifpb.com/microservices-proto/golang/shipping";
+
+message ShippingRequest {
+  string order_id = 1;
+  repeated OrderItem items = 2;
+}
+
+message OrderItem {
+  string item_id = 1;
+  int32 quantity = 2;
+}
+
+message ShippingResponse {
+  string order_id = 1;
+  int32 delivery_days = 2;
+  string status = 3;
+}
+
+service ShippingService {
+  rpc CalculateShipping(ShippingRequest) returns (ShippingResponse);
+}

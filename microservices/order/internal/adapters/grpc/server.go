@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"ifpb.com/microservices-proto/golang/payment"
+	payment "ifpb.com/microservices-proto/golang/payment"
 	"ifpb.com/microservices/order/internal/application/core/api"
 	"ifpb.com/microservices/order/internal/application/core/domain"
 )

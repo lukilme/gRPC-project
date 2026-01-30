@@ -2,9 +2,9 @@ module ifpb.com/microservices/order
 
 go 1.24.11
 
-require google.golang.org/grpc v1.76.0
+require google.golang.org/grpc v1.78.0
 
-require ifpb.com/microservices-proto/golang/payment v0.0.0
+require ifpb.com/microservices-proto/golang v0.0.0
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
@@ -28,13 +28,13 @@ require (
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/charmbracelet/bubbletea v1.3.10
-	github.com/go-sql-driver/mysql v1.9.3 // indirect
+	github.com/go-sql-driver/mysql v1.9.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
-	golang.org/x/net v0.42.0 // indirect
-	golang.org/x/sys v0.36.0 // indirect
-	golang.org/x/text v0.27.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250804133106-a7a43d27e69b // indirect
-	google.golang.org/protobuf v1.36.6 // indirect
+	golang.org/x/net v0.47.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/text v0.31.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20251029180050-ab9386a59fda // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 )
 
-replace ifpb.com/microservices-proto/golang/payment => ../../microservices-proto/golang/payment
+replace ifpb.com/microservices-proto/golang => ../../microservices-proto/golang
