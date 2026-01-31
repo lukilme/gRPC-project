@@ -7,7 +7,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"ifpb.com/microservices/order/internal/application/core/domain"
+	"ifpb.com/microservices/shipping/internal/application/core/domain"
 )
 
 type Adapter struct {
@@ -35,27 +35,15 @@ func NewAdapter(dataSourceURL string) (*Adapter, error) {
 func createTables(db *sql.DB) error {
 	queries := []string{
 
-		`CREATE TABLE IF NOT EXISTS orders (
+		`CREATE TABLE IF NOT EXISTS shipping (
             id BIGINT AUTO_INCREMENT PRIMARY KEY,
-            customer_id BIGINT NOT NULL,
-            status VARCHAR(50) NOT NULL DEFAULT 'pending',
+            delivery_days INT NOT NULL,
             created_at BIGINT NOT NULL
         )`,
 
 		`CREATE TABLE IF NOT EXISTS order_items (
-            id BIGINT AUTO_INCREMENT PRIMARY KEY,
-            order_id BIGINT NOT NULL,
-            product_id BIGINT NOT NULL,
-            quantity INT NOT NULL,
-            unit_price FLOAT NOT NULL
-        )`,
-
-		`CREATE TABLE IF NOT EXISTS order_items (
-			id BIGINT AUTO_INCREMENT PRIMARY KEY,
-			order_id BIGINT NOT NULL,
-			product_id BIGINT NOT NULL,
 			quantity INT NOT NULL,
-			unit_price FLOAT NOT NULL,
+			order_id BIGINT NOT NULLL
 			CONSTRAINT fk_order_items_order
 				FOREIGN KEY (order_id) REFERENCES orders(id)
 				ON DELETE CASCADE
@@ -79,46 +67,11 @@ func contains(s, substr string) bool {
 	return len(s) >= len(substr) && (s == substr || len(s) > len(substr) && (s[:len(substr)] == substr || contains(s[1:], substr)))
 }
 
-func (a *Adapter) Get(id int64) (domain.Order, error) {
-	orderQuery := `SELECT id, customer_id, status, created_at FROM orders WHERE id = ?`
-
-	row := a.db.QueryRow(orderQuery, id)
-
-	var order domain.Order
-	err := row.Scan(&order.ID, &order.CustomerID, &order.Status, &order.CreatedAt)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return domain.Order{}, fmt.Errorf("order not found with id %d", id)
-		}
-		return domain.Order{}, fmt.Errorf("failed to get order: %w", err)
-	}
-
-	itemsQuery := `SELECT product_id, quantity, unit_price FROM order_items WHERE order_id = ?`
-
-	rows, err := a.db.Query(itemsQuery, id)
-	if err != nil {
-		return order, fmt.Errorf("failed to get order items: %w", err)
-	}
-	defer rows.Close()
-
-	var items []domain.OrderItem
-	for rows.Next() {
-		var item domain.OrderItem
-		if err := rows.Scan(&item.ProductID, &item.Quantity, &item.UnitPrice); err != nil {
-			return order, fmt.Errorf("failed to scan order item: %w", err)
-		}
-		items = append(items, item)
-	}
-
-	if err = rows.Err(); err != nil {
-		return order, fmt.Errorf("error iterating order items: %w", err)
-	}
-
-	order.OrderItems = items
-	return order, nil
+func (a *Adapter) Close() error {
+	return a.db.Close()
 }
 
-func (a *Adapter) Save(order *domain.Order) error {
+func (a *Adapter) Save(shipping *domain.Shipping) error {
 	tx, err := a.db.Begin()
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %w", err)
@@ -131,9 +84,9 @@ func (a *Adapter) Save(order *domain.Order) error {
 		}
 	}()
 
-	orderQuery := `INSERT INTO orders (customer_id, status, created_at) VALUES (?, ?, ?)`
+	shippingQuery := `INSERT INTO orders (customer_id, status, created_at) VALUES (?, ?, ?)`
 
-	result, err := tx.Exec(orderQuery, order.CustomerID, order.Status, time.Now().Unix())
+	result, err := tx.Exec(shippingQuery, shipping.OrderID, shipping.DeliveryDays, time.Now().Unix())
 	if err != nil {
 		tx.Rollback()
 		return fmt.Errorf("failed to insert order: %w", err)
@@ -144,12 +97,13 @@ func (a *Adapter) Save(order *domain.Order) error {
 		tx.Rollback()
 		return fmt.Errorf("failed to get last insert id: %w", err)
 	}
-	order.ID = orderID
+
+	shipping.OrderID = int(orderID)
 
 	itemQuery := `INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)`
 
-	for _, item := range order.OrderItems {
-		_, err := tx.Exec(itemQuery, orderID, item.ProductID, item.Quantity, item.UnitPrice)
+	for _, item := range shipping.Items {
+		_, err := tx.Exec(itemQuery, orderID, item.Quantity)
 		if err != nil {
 			tx.Rollback()
 			return fmt.Errorf("failed to insert order item: %w", err)
@@ -162,8 +116,4 @@ func (a *Adapter) Save(order *domain.Order) error {
 
 	log.Printf("Order saved successfully with id %d", orderID)
 	return nil
-}
-
-func (a *Adapter) Close() error {
-	return a.db.Close()
 }
