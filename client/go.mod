@@ -8,7 +8,7 @@ require google.golang.org/grpc v1.78.0
 
 require github.com/atotto/clipboard v0.1.4 // indirect
 
-require ifpb.com/microservices-proto/golang/payment v0.0.0
+require ifpb.com/microservices-proto/golang v0.0.0
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
@@ -33,7 +33,7 @@ require (
 	golang.org/x/sys v0.38.0 // indirect
 	golang.org/x/text v0.31.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251029180050-ab9386a59fda // indirect
-	google.golang.org/protobuf v1.36.10 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 )
 
-replace ifpb.com/microservices-proto/golang/payment => ../microservices-proto/golang/payment
+replace ifpb.com/microservices-proto/golang => ../microservices-proto/golang
