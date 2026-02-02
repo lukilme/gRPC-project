@@ -7,7 +7,7 @@ run-payment:
 	ENV=development \
 	go run cmd/main.go
 
-run-server:
+run-order:
 	@echo "Iniciando Order Service...!"
 	cd microservices/order && \
 	DB_DRIVER=mysql \
@@ -17,6 +17,14 @@ run-server:
 	ENV=development \
 	go run cmd/main.go
 
+run-shipping:
+	@echo "Iniciando Shipping Service..."
+	cd microservices/shipping && \
+	DB_DRIVER=mysql \
+	DATA_SOURCE_URL="root:password@tcp(127.0.0.1:3306)/shipping" \
+	APPLICATION_PORT=3002 \
+	ENV=development \
+	go run cmd/main.go
 
 test-db:
 	@echo "Testando conexão com MySQL..."

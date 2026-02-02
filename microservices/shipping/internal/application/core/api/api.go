@@ -13,7 +13,7 @@ type Application struct {
 	db domain.DBPort
 }
 
-func NewApplication(db domain.DBPort, shipping domain.DBPort) *Application {
+func NewApplication(db domain.DBPort) *Application {
 	return &Application{
 		db: db,
 	}

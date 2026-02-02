@@ -4,40 +4,12 @@ import (
 	"os"
 
 	log "github.com/sirupsen/logrus"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/exporters/jaeger"
-	"go.opentelemetry.io/otel/sdk/resource"
-	tracesdk "go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.10.0"
 	"go.opentelemetry.io/otel/trace"
 	"ifpb.com/microservices/shipping/config"
 	"ifpb.com/microservices/shipping/internal/adapters/db"
 	"ifpb.com/microservices/shipping/internal/adapters/grpc"
 	"ifpb.com/microservices/shipping/internal/application/core/api"
 )
-
-const (
-	service     = "shipping"
-	environment = "dev"
-	id          = 2
-)
-
-func tracerProvider(url string) (*tracesdk.TracerProvider, error) {
-	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
-	if err != nil {
-		return nil, err
-	}
-	tp := tracesdk.NewTracerProvider(
-		tracesdk.WithBatcher(exp),
-		tracesdk.WithResource(resource.NewWithAttributes(
-			semconv.SchemaURL,
-			semconv.ServiceNameKey.String(service),
-			attribute.String("environment", environment),
-			attribute.Int64("ID", id),
-		)),
-	)
-	return tp, nil
-}
 
 func init() {
 	log.SetFormatter(customLogger{

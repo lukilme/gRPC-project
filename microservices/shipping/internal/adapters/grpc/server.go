@@ -2,7 +2,9 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"math"
 	"net"
 
 	"google.golang.org/grpc"
@@ -16,51 +18,46 @@ import (
 type Adapter struct {
 	payment.UnimplementedOrderServiceServer
 	api    *api.Application
-	port   string
+	port   int
 	server *grpc.Server
 }
 
-func NewAdapter(api *api.Application, port string) *Adapter {
+func NewAdapter(api *api.Application, port int) *Adapter {
 	return &Adapter{
 		api:  api,
 		port: port,
 	}
 }
 
-func (a *Adapter) PlaceOrder(ctx context.Context, req *payment.CreateOrderRequest) (*payment.CreateOrderResponse, error) {
-	order, err := convertToDomainOrder(req)
-	if err != nil {
-		return nil, err
-	}
-
-	savedOrder, err := a.api.PlaceOrder(order)
-	if err != nil {
-		return nil, err
-	}
-
-	return &payment.CreateOrderResponse{
-		OrderId: savedOrder.ID,
-	}, nil
+type ShippingService struct {
+	db domain.DBPort
 }
 
-func convertToDomainOrder(req *payment.CreateOrderRequest) (domain.Order, error) {
-	var orderItems []domain.OrderItem
-	for _, item := range req.GetItems() {
-		orderItems = append(orderItems, domain.OrderItem{
-			ProductID: item.GetProductId(),
-			Quantity:  item.GetQuantity(),
-			UnitPrice: item.GetUnitPrice(),
-		})
+func (s *ShippingService) CalculateShipping(ctx context.Context, orderID int, items []domain.OrderItem) (*domain.Shipping, error) {
+	deliveryDays, err := s.db.CalculateDeliveryDays(items)
+	if err != nil {
+		return nil, err
 	}
 
-	return domain.Order{
-		CustomerID: req.GetCustomerId(),
-		OrderItems: orderItems,
-	}, nil
+	// Regra de negócio: mínimo 1 dia + 1 dia a cada 5 unidades
+	totalUnits := 0
+	for _, item := range items {
+		totalUnits += item.Quantity
+	}
+
+	deliveryDays = int(math.Max(1, float64(1+totalUnits/5)))
+
+	shipping := &domain.Shipping{
+		OrderID:      orderID,
+		Items:        items,
+		DeliveryDays: deliveryDays,
+	}
+
+	return shipping, nil
 }
 
 func (a *Adapter) Run() {
-	lis, err := net.Listen("tcp", ":"+a.port)
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", a.port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -71,7 +68,7 @@ func (a *Adapter) Run() {
 
 	reflection.Register(a.server)
 
-	log.Printf("gRPC server listening on port %s", a.port)
+	log.Printf("gRPC server listening on port %v", a.port)
 	if err := a.server.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

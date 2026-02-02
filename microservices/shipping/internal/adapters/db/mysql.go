@@ -14,6 +14,14 @@ type Adapter struct {
 	db *sql.DB
 }
 
+func (a *Adapter) GetByID(shippingID int) (*domain.Shipping, error) {
+	panic("unimplemented")
+}
+
+func (a *Adapter) Update(shipping *domain.Shipping) error {
+	panic("unimplemented")
+}
+
 func NewAdapter(dataSourceURL string) (*Adapter, error) {
 	db, err := sql.Open("mysql", dataSourceURL)
 	if err != nil {
@@ -36,7 +44,7 @@ func createTables(db *sql.DB) error {
 	queries := []string{
 		`CREATE TABLE IF NOT EXISTS shipping (
 			id BIGINT AUTO_INCREMENT PRIMARY KEY,
-			order_id BIGINT AUTO_INCREMENT NOT NULL UNIQUE,
+			order_id BIGINT NOT NULL UNIQUE,
 			delivery_days INT NOT NULL,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			INDEX idx_order_id (order_id)
@@ -44,8 +52,8 @@ func createTables(db *sql.DB) error {
 
 		`CREATE TABLE IF NOT EXISTS shipping_items (
 			id BIGINT AUTO_INCREMENT PRIMARY KEY,
-			shipping_id BIGINT AUTO_INCREMENT NOT NULL,
-			item_id BIGINT AUTO_INCREMENT NOT NULL,
+			shipping_id BIGINT NOT NULL,
+			item_id BIGINT NOT NULL,
 			quantity INT NOT NULL,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			CONSTRAINT fk_shipping_items_shipping

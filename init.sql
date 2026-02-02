@@ -36,3 +36,6 @@ CREATE TABLE IF NOT EXISTS payments (
     INDEX idx_order (order_id),
     INDEX idx_created (created_at)
 );
+
+
+CREATE DATABASE IF NOT EXISTS `shipping`;
