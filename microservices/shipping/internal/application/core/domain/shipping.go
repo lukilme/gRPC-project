@@ -1,8 +1,8 @@
 package domain
 
 type Shipping struct {
-	ID           int
-	OrderID      int
+	ID           string
+	OrderID      string
 	Items        []OrderItem
 	DeliveryDays int
 	CreatedAt    int
