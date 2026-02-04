@@ -1,11 +1,15 @@
 package domain
 
+import "context"
+
 type Order struct {
-	ID         int64
-	CustomerID int64
-	Status     string
-	OrderItems []OrderItem
-	CreatedAt  int64
+	ID           int64
+	CustomerID   int64
+	Status       string
+	OrderItems   []OrderItem
+	CreatedAt    int64
+	TotalAmount  float32
+	DeliveryDays int
 }
 
 type OrderItem struct {
@@ -22,11 +26,35 @@ func (o *Order) TotalPrice() float32 {
 	return totalPrice
 }
 
-type PaymentPort interface {
-	Charge(order *Order) error
-}
-
 type DBPort interface {
 	Get(id int64) (Order, error)
 	Save(order *Order) error
+	Update(order *Order) error
+	ItemExists(productID int64) (bool, error)
+}
+
+type PaymentClient interface {
+	ProcessPayment(ctx context.Context, order *Order) (*PaymentResponse, error)
+}
+
+type ShippingClient interface {
+	CalculateShipping(ctx context.Context, orderID string, items []ShippingItem) (*ShippingResponse, error)
+	Close()
+}
+
+type PaymentResponse struct {
+	ID     string
+	Status string
+	Amount float32
+}
+
+type ShippingResponse struct {
+	OrderID      string
+	DeliveryDays int
+	Status       string
+}
+
+type ShippingItem struct {
+	ItemID   string
+	Quantity int32
 }

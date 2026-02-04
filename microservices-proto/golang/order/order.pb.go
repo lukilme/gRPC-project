@@ -23,7 +23,7 @@ const (
 
 type CreateOrderRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	CustomerId    string                 `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
 	Items         []*OrderItem           `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -59,9 +59,9 @@ func (*CreateOrderRequest) Descriptor() ([]byte, []int) {
 	return file_order_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CreateOrderRequest) GetUserId() string {
+func (x *CreateOrderRequest) GetCustomerId() string {
 	if x != nil {
-		return x.UserId
+		return x.CustomerId
 	}
 	return ""
 }
@@ -75,10 +75,9 @@ func (x *CreateOrderRequest) GetItems() []*OrderItem {
 
 type OrderItem struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ItemId        string                 `protobuf:"bytes,1,opt,name=item_id,json=itemId,proto3" json:"item_id,omitempty"`
+	ProductId     string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
 	Quantity      int32                  `protobuf:"varint,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
-	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Price         float64                `protobuf:"fixed64,4,opt,name=price,proto3" json:"price,omitempty"`
+	UnitPrice     float64                `protobuf:"fixed64,3,opt,name=unit_price,json=unitPrice,proto3" json:"unit_price,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -113,9 +112,9 @@ func (*OrderItem) Descriptor() ([]byte, []int) {
 	return file_order_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *OrderItem) GetItemId() string {
+func (x *OrderItem) GetProductId() string {
 	if x != nil {
-		return x.ItemId
+		return x.ProductId
 	}
 	return ""
 }
@@ -127,16 +126,9 @@ func (x *OrderItem) GetQuantity() int32 {
 	return 0
 }
 
-func (x *OrderItem) GetName() string {
+func (x *OrderItem) GetUnitPrice() float64 {
 	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *OrderItem) GetPrice() float64 {
-	if x != nil {
-		return x.Price
+		return x.UnitPrice
 	}
 	return 0
 }
@@ -144,10 +136,11 @@ func (x *OrderItem) GetPrice() float64 {
 type CreateOrderResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	OrderId       string                 `protobuf:"bytes,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
-	TotalAmount   float64                `protobuf:"fixed64,2,opt,name=total_amount,json=totalAmount,proto3" json:"total_amount,omitempty"`
-	PaymentStatus string                 `protobuf:"bytes,3,opt,name=payment_status,json=paymentStatus,proto3" json:"payment_status,omitempty"`
-	DeliveryDays  int32                  `protobuf:"varint,4,opt,name=delivery_days,json=deliveryDays,proto3" json:"delivery_days,omitempty"`
-	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	CustomerId    string                 `protobuf:"bytes,2,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
+	TotalAmount   float64                `protobuf:"fixed64,3,opt,name=total_amount,json=totalAmount,proto3" json:"total_amount,omitempty"`
+	Status        string                 `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
+	DeliveryDays  int32                  `protobuf:"varint,5,opt,name=delivery_days,json=deliveryDays,proto3" json:"delivery_days,omitempty"`
+	Items         []*OrderItem           `protobuf:"bytes,6,rep,name=items,proto3" json:"items,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -189,23 +182,16 @@ func (x *CreateOrderResponse) GetOrderId() string {
 	return ""
 }
 
-func (x *CreateOrderResponse) GetTotalAmount() float64 {
+func (x *CreateOrderResponse) GetCustomerId() string {
 	if x != nil {
-		return x.TotalAmount
-	}
-	return 0
-}
-
-func (x *CreateOrderResponse) GetPaymentStatus() string {
-	if x != nil {
-		return x.PaymentStatus
+		return x.CustomerId
 	}
 	return ""
 }
 
-func (x *CreateOrderResponse) GetDeliveryDays() int32 {
+func (x *CreateOrderResponse) GetTotalAmount() float64 {
 	if x != nil {
-		return x.DeliveryDays
+		return x.TotalAmount
 	}
 	return 0
 }
@@ -217,25 +203,43 @@ func (x *CreateOrderResponse) GetStatus() string {
 	return ""
 }
 
+func (x *CreateOrderResponse) GetDeliveryDays() int32 {
+	if x != nil {
+		return x.DeliveryDays
+	}
+	return 0
+}
+
+func (x *CreateOrderResponse) GetItems() []*OrderItem {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
 var File_order_proto protoreflect.FileDescriptor
 
 const file_order_proto_rawDesc = "" +
 	"\n" +
-	"\vorder.proto\x12\x05order\"U\n" +
-	"\x12CreateOrderRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12&\n" +
-	"\x05items\x18\x02 \x03(\v2\x10.order.OrderItemR\x05items\"j\n" +
-	"\tOrderItem\x12\x17\n" +
-	"\aitem_id\x18\x01 \x01(\tR\x06itemId\x12\x1a\n" +
-	"\bquantity\x18\x02 \x01(\x05R\bquantity\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\x12\x14\n" +
-	"\x05price\x18\x04 \x01(\x01R\x05price\"\xb7\x01\n" +
+	"\vorder.proto\x12\x05order\"]\n" +
+	"\x12CreateOrderRequest\x12\x1f\n" +
+	"\vcustomer_id\x18\x01 \x01(\tR\n" +
+	"customerId\x12&\n" +
+	"\x05items\x18\x02 \x03(\v2\x10.order.OrderItemR\x05items\"e\n" +
+	"\tOrderItem\x12\x1d\n" +
+	"\n" +
+	"product_id\x18\x01 \x01(\tR\tproductId\x12\x1a\n" +
+	"\bquantity\x18\x02 \x01(\x05R\bquantity\x12\x1d\n" +
+	"\n" +
+	"unit_price\x18\x03 \x01(\x01R\tunitPrice\"\xd9\x01\n" +
 	"\x13CreateOrderResponse\x12\x19\n" +
-	"\border_id\x18\x01 \x01(\tR\aorderId\x12!\n" +
-	"\ftotal_amount\x18\x02 \x01(\x01R\vtotalAmount\x12%\n" +
-	"\x0epayment_status\x18\x03 \x01(\tR\rpaymentStatus\x12#\n" +
-	"\rdelivery_days\x18\x04 \x01(\x05R\fdeliveryDays\x12\x16\n" +
-	"\x06status\x18\x05 \x01(\tR\x06status2T\n" +
+	"\border_id\x18\x01 \x01(\tR\aorderId\x12\x1f\n" +
+	"\vcustomer_id\x18\x02 \x01(\tR\n" +
+	"customerId\x12!\n" +
+	"\ftotal_amount\x18\x03 \x01(\x01R\vtotalAmount\x12\x16\n" +
+	"\x06status\x18\x04 \x01(\tR\x06status\x12#\n" +
+	"\rdelivery_days\x18\x05 \x01(\x05R\fdeliveryDays\x12&\n" +
+	"\x05items\x18\x06 \x03(\v2\x10.order.OrderItemR\x05items2T\n" +
 	"\fOrderService\x12D\n" +
 	"\vCreateOrder\x12\x19.order.CreateOrderRequest\x1a\x1a.order.CreateOrderResponseB+Z)ifpb.com/microservices-proto/golang/orderb\x06proto3"
 
@@ -259,13 +263,14 @@ var file_order_proto_goTypes = []any{
 }
 var file_order_proto_depIdxs = []int32{
 	1, // 0: order.CreateOrderRequest.items:type_name -> order.OrderItem
-	0, // 1: order.OrderService.CreateOrder:input_type -> order.CreateOrderRequest
-	2, // 2: order.OrderService.CreateOrder:output_type -> order.CreateOrderResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	1, // 1: order.CreateOrderResponse.items:type_name -> order.OrderItem
+	0, // 2: order.OrderService.CreateOrder:input_type -> order.CreateOrderRequest
+	2, // 3: order.OrderService.CreateOrder:output_type -> order.CreateOrderResponse
+	3, // [3:4] is the sub-list for method output_type
+	2, // [2:3] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_order_proto_init() }

@@ -13,3 +13,10 @@ func GetApplicationPort() string {
 func GetPaymentServiceUrl() string {
 	return os.Getenv("PAYMENT_SERVICE_URL")
 }
+
+func GetShippingServiceUrl() string {
+	if url := os.Getenv("SHIPPING_SERVICE_URL"); url != "" {
+		return url
+	}
+	return "localhost:3002"
+}
