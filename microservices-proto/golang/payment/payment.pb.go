@@ -320,7 +320,7 @@ const file_payment_proto_rawDesc = "" +
 	"\x06Create\x12\x1d.payment.CreatePaymentRequest\x1a\x1e.payment.CreatePaymentResponse\"\x002Y\n" +
 	"\fOrderService\x12I\n" +
 	"\n" +
-	"PlaceOrder\x12\x1b.payment.CreateOrderRequest\x1a\x1c.payment.CreateOrderResponse\"\x00B-Z+ifpb.com/microservices-proto/golang/paymentb\x06proto3"
+	"PlaceOrder\x12\x1b.payment.CreateOrderRequest\x1a\x1c.payment.CreateOrderResponse\"\x00B5Z3ifpb.com/microservices-proto/golang/payment;paymentb\x06proto3"
 
 var (
 	file_payment_proto_rawDescOnce sync.Once

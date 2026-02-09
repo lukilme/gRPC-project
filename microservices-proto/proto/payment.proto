@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package payment;
 
-option go_package = "ifpb.com/microservices-proto/golang/payment";
+option go_package = "ifpb.com/microservices-proto/golang/payment;payment";
 
 message CreatePaymentRequest {
     int64 customer_id = 1;

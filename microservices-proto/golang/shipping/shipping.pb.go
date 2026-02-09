@@ -201,7 +201,7 @@ const file_shipping_proto_rawDesc = "" +
 	"\rdelivery_days\x18\x02 \x01(\x05R\fdeliveryDays\x12\x16\n" +
 	"\x06status\x18\x03 \x01(\tR\x06status2]\n" +
 	"\x0fShippingService\x12J\n" +
-	"\x11CalculateShipping\x12\x19.shipping.ShippingRequest\x1a\x1a.shipping.ShippingResponseB.Z,ifpb.com/microservices-proto/golang/shippingb\x06proto3"
+	"\x11CalculateShipping\x12\x19.shipping.ShippingRequest\x1a\x1a.shipping.ShippingResponseB7Z5ifpb.com/microservices-proto/golang/shipping;shippingb\x06proto3"
 
 var (
 	file_shipping_proto_rawDescOnce sync.Once

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package order;
 
-option go_package = "ifpb.com/microservices-proto/golang/order";
+option go_package = "ifpb.com/microservices-proto/golang/order;order";
 
 message OrderItem {
   string product_id = 1;

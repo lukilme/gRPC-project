@@ -1,5 +1,4 @@
 module ifpb.com/microservices-proto/golang
-
 go 1.24.0
 
 toolchain go1.24.12
