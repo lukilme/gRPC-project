@@ -126,15 +126,6 @@ Cria o banco **payment** caso ele ainda não exista.
 
 ---
 
-## Próximos passos sugeridos
-
-* Centralizar configuração via `.env`
-* Criar um `docker-compose.yml` para subir tudo com um comando
-* Adicionar targets de migração de banco
-* Padronizar logs e health checks
-
----
-
 Ambiente simples, explícito e previsível — do jeito certo para desenvolver e depurar microserviços.
 
 ---
@@ -167,27 +158,6 @@ Os principais componentes são:
 
 ---
 
-## Padrão interno dos microserviços
-
-Todos os serviços seguem a mesma estrutura conceitual:
-
-```
-cmd/            # Ponto de entrada da aplicação
-config/         # Leitura e validação de variáveis de ambiente
-internal/
-  adapters/     # Implementações concretas (DB, gRPC, HTTP, etc.)
-  application/  # Regras de negócio
-    core/       # Domínio e casos de uso
-    ports/      # Interfaces (contratos)
-```
-
-Esse padrão facilita:
-
-* Testes unitários
-* Substituição de dependências
-* Evolução independente dos serviços
-
----
 
 ## Comunicação entre serviços
 
