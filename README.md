@@ -247,21 +247,6 @@ Projeto estruturado para crescer sem perder controle — simples, explícito e s
 
 ### Estrutura de diretórios
 ```sh
-├── client
-│   ├── domain
-│   │   └── order.go
-│   ├── go.mod
-│   ├── go.sum
-│   ├── internal
-│   │   └── tui
-│   │       ├── form.go
-│   │       ├── grpc
-│   │       │   └── client.go
-│   │       ├── model.go
-│   │       ├── update.go
-│   │       └── view.go
-│   └── main
-│       └── main.go
 ├── curl
 │   ├── order.proto
 │   ├── order_test.proto
